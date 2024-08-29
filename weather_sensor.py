@@ -1,4 +1,3 @@
-import os
 import RPi.GPIO as GPIO
 import serial
 import time
@@ -6,21 +5,22 @@ import struct
 import paho.mqtt.client as mqtt
 import json
 
-# Get the Raspberry Pi ID from an environment variable
-RASPBERRY_PI_ID = os.environ.get('RASPBERRY_PI_ID', 'unknown')
 
 # MQTT settings
-MQTT_BROKER = os.environ.get('MQTT_BROKER', 'localhost')
+MQTT_BROKER = "localhost"
 MQTT_PORT = 1883
-MQTT_TOPIC = f"weather_sensor/{RASPBERRY_PI_ID}/data"
+MQTT_TOPIC = "weather_sensor/data"
+
 
 # Serial port settings
 SERIAL_PORT = "/dev/ttyS0"
 BAUD_RATE = 9600
 
+
 # Initialize MQTT client
 client = mqtt.Client()
 client.connect(MQTT_BROKER, MQTT_PORT, 60)
+
 
 def hex_to_float(hex_value):
     """Convert hexadecimal to float."""
@@ -33,8 +33,8 @@ def process_data(data):
         print("Incomplete data received")
         return None
 
+
     return {
-        "raspberry_pi_id": RASPBERRY_PI_ID,
         "humidity": hex_to_float(data[3] + data[4]),
         "temperature": hex_to_float(data[5] + data[6]),
         "noise": hex_to_float(data[7] + data[8]),
@@ -44,8 +44,10 @@ def process_data(data):
         "lux": int(data[15] + data[16] + data[17] + data[18], 16)
     }
 
+
 def main():
     ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
+
 
     print("Press Ctrl + C to exit")
     try:
@@ -72,6 +74,7 @@ def main():
         ser.flush()
         ser.close()
         client.disconnect()
+
 
 if __name__ == "__main__":
     main()
