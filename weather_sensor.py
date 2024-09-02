@@ -5,11 +5,15 @@ import struct
 import paho.mqtt.client as mqtt
 import json
 
+import socket
+hostname = socket.gethostname()
+ip = socket.gethostbyname(hostname)
+ID = hostname+ip
 
 # MQTT settings
-MQTT_BROKER = "localhost"
+MQTT_BROKER = "100.103.112.70"
 MQTT_PORT = 1883
-MQTT_TOPIC = "weather_sensor/data"
+MQTT_TOPIC = f"weather_sensor/{ID}/data"
 
 
 # Serial port settings
